@@ -1,0 +1,79 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Back button -->
+  <a routerLink="/listings" class="inline-block px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors mb-6">← Back to Listings</a>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-12">
+    <div class="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{{ error }}</div>
+
+  <!-- Property Detail -->
+  <div *ngIf="property && !loading">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Left: Image -->
+      <div class="lg:col-span-7">
+        <img [src]="property.imageUrl" class="w-full h-auto rounded-xl shadow-lg object-cover"
+          alt="{{ property.title }}"
+          onerror="this.src='https://via.placeholder.com/600x400?text=No+Image'" />
+      </div>
+
+      <!-- Right: Details -->
+      <div class="lg:col-span-5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="px-3 py-1 rounded-full text-sm font-semibold"
+            [class]="property.type === 'Rent' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
+            For {{ property.type }}
+          </span>
+          <span class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-500 text-white">{{ property.propertyCategory }}</span>
+        </div>
+
+        <h2 class="text-2xl font-bold mb-2">{{ property.title }}</h2>
+        <p class="text-gray-500 text-lg mb-3">📍 {{ property.location }}</p>
+        <h3 class="text-blue-600 text-2xl font-bold mb-4">{{ formatPrice(property.price, property.type) }}</h3>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <div class="text-2xl mb-1">🛏</div>
+            <div class="font-bold text-lg">{{ property.bedrooms }}</div>
+            <small class="text-gray-500">Bedrooms</small>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <div class="text-2xl mb-1">🚿</div>
+            <div class="font-bold text-lg">{{ property.bathrooms }}</div>
+            <small class="text-gray-500">Bathrooms</small>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <div class="text-2xl mb-1">📐</div>
+            <div class="font-bold text-lg">{{ property.area }}</div>
+            <small class="text-gray-500">Sq. Ft.</small>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <h5 class="font-bold text-lg mb-2">Description</h5>
+        <p class="text-gray-500 mb-6">{{ property.description }}</p>
+
+        <!-- Contact Card -->
+        <div class="border-2 border-blue-500 rounded-xl p-4 mb-6">
+          <h6 class="font-bold text-blue-600 mb-3">📞 Contact Owner</h6>
+          <p class="mb-2"><strong>Name:</strong> {{ property.contactName }}</p>
+          <p class="mb-0"><strong>Phone:</strong>
+            <a [href]="'tel:' + property.contactPhone" class="text-blue-600 hover:text-blue-800 ml-1">
+              {{ property.contactPhone }}
+            </a>
+          </p>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3">
+          <a [routerLink]="['/edit-property', property._id]" class="flex-1 bg-yellow-400 text-gray-900 text-center py-3 rounded-lg hover:bg-yellow-300 transition-colors font-semibold">✏️ Edit</a>
+          <button class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors" (click)="onDelete()">🗑️ Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

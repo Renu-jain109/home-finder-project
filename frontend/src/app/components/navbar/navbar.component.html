@@ -1,0 +1,31 @@
+<nav class="bg-blue-600 text-white shadow-md h-16">
+  <div class="container mx-auto px-4 h-full">
+    <div class="flex items-center justify-between h-full">
+      <a class="text-xl font-bold" routerLink="/">🏠 HomeFinder</a>
+      <div class="hidden md:flex items-center space-x-4">
+        <a class="hover:text-blue-200 transition-colors px-3 py-2" routerLink="/" routerLinkActive="text-yellow-300" [routerLinkActiveOptions]="{exact: true}">Home</a>
+        <a class="hover:text-blue-200 transition-colors px-3 py-2" routerLink="/listings" routerLinkActive="text-yellow-300">Browse</a>
+        <a class="hover:text-blue-200 transition-colors px-3 py-2" routerLink="/split-view" routerLinkActive="text-yellow-300">View on Map</a>
+
+        <ng-container *ngIf="!isLoggedIn">
+          <button (click)="openLogin()" class="bg-white text-blue-600 px-5 py-2 rounded-full font-semibold hover:bg-blue-50 transition-colors">Login</button>
+          <button (click)="openRegister()" class="bg-yellow-400 text-gray-900 px-5 py-2 rounded-full font-semibold hover:bg-yellow-300 transition-colors">Register</button>
+        </ng-container>
+
+        <button *ngIf="isLoggedIn" (click)="onLogout()" class="bg-red-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-red-600 transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          Logout
+        </button>
+      </div>
+      <button class="md:hidden p-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <app-auth-modal *ngIf="showAuthModal" [mode]="authModalMode" (close)="closeAuthModal()" (success)="onAuthSuccess()"></app-auth-modal>
+</nav>

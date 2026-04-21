@@ -1,0 +1,139 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-3xl mx-auto">
+
+    <h2 class="text-2xl font-bold mb-1">{{ isEditMode ? '✏️ Edit Property' : '🏠 List a Property' }}</h2>
+    <p class="text-gray-500 mb-6">{{ isEditMode ? 'Update the property details below.' : 'Fill in the details to post your property.' }}</p>
+
+    <div *ngIf="loading" class="text-center py-8">
+      <div class="inline-block w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">✅ {{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">❌ {{ errorMessage }}</div>
+
+    <div class="bg-white rounded-xl shadow-md p-6" *ngIf="!loading">
+      <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
+
+        <!-- Title -->
+        <div class="mb-4">
+          <label class="block text-gray-700 font-semibold mb-2">Property Title *</label>
+          <input type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            [class.border-red-500]="f('title')?.invalid && f('title')?.touched"
+            formControlName="title"
+            placeholder="e.g. 2BHK Apartment in Indiranagar" />
+          <div *ngIf="f('title')?.invalid && f('title')?.touched" class="text-red-500 text-sm mt-1">Title must be at least 5 characters.</div>
+        </div>
+
+        <!-- Type & Category -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Listing Type *</label>
+            <select class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('type')?.invalid && f('type')?.touched"
+              formControlName="type">
+              <option value="Rent">For Rent</option>
+              <option value="Sale">For Sale</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Property Category *</label>
+            <select class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" formControlName="propertyCategory">
+              <option value="Apartment">Apartment</option>
+              <option value="House">House</option>
+              <option value="Villa">Villa</option>
+              <option value="Plot">Plot</option>
+              <option value="Commercial">Commercial</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Price & Location -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Price (₹) *</label>
+            <input type="number" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('price')?.invalid && f('price')?.touched"
+              formControlName="price"
+              placeholder="e.g. 25000" />
+            <div *ngIf="f('price')?.invalid && f('price')?.touched" class="text-red-500 text-sm mt-1">Enter a valid price.</div>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Location *</label>
+            <input type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('location')?.invalid && f('location')?.touched"
+              formControlName="location"
+              placeholder="e.g. Koramangala, Bengaluru" />
+            <div *ngIf="f('location')?.invalid && f('location')?.touched" class="text-red-500 text-sm mt-1">Location is required.</div>
+          </div>
+        </div>
+
+        <!-- Bedrooms, Bathrooms, Area -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Bedrooms *</label>
+            <input type="number" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('bedrooms')?.invalid && f('bedrooms')?.touched"
+              formControlName="bedrooms" min="0" />
+            <div *ngIf="f('bedrooms')?.invalid && f('bedrooms')?.touched" class="text-red-500 text-sm mt-1">Required.</div>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Bathrooms *</label>
+            <input type="number" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" formControlName="bathrooms" min="0" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Area (sqft) *</label>
+            <input type="number" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('area')?.invalid && f('area')?.touched"
+              formControlName="area" min="1" />
+            <div *ngIf="f('area')?.invalid && f('area')?.touched" class="text-red-500 text-sm mt-1">Required.</div>
+          </div>
+        </div>
+
+        <!-- Image URL -->
+        <div class="mb-4">
+          <label class="block text-gray-700 font-semibold mb-2">Image URL</label>
+          <input type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" formControlName="imageUrl"
+            placeholder="https://example.com/image.jpg" />
+          <small class="text-gray-500 text-sm">Paste a direct image link (Unsplash, etc.)</small>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <label class="block text-gray-700 font-semibold mb-2">Description</label>
+          <textarea class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3" formControlName="description"
+            placeholder="Describe the property..."></textarea>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Your Name *</label>
+            <input type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('contactName')?.invalid && f('contactName')?.touched"
+              formControlName="contactName" />
+            <div *ngIf="f('contactName')?.invalid && f('contactName')?.touched" class="text-red-500 text-sm mt-1">Name is required.</div>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Phone Number *</label>
+            <input type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('contactPhone')?.invalid && f('contactPhone')?.touched"
+              formControlName="contactPhone"
+              placeholder="10-digit number" />
+            <div *ngIf="f('contactPhone')?.invalid && f('contactPhone')?.touched" class="text-red-500 text-sm mt-1">Enter a valid 10-digit phone number.</div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex gap-3">
+          <button type="submit" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50" [disabled]="submitting">
+            <span *ngIf="submitting" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+            {{ isEditMode ? 'Update Property' : 'List Property' }}
+          </button>
+          <a routerLink="/listings" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-center">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>

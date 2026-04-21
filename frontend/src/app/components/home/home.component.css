@@ -1,0 +1,4 @@
+.category-card:hover {
+  transform: translateY(-4px);
+  background-color: #e3f2fd !important;
+}
