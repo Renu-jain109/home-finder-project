@@ -14,4 +14,6 @@ import { AppComponent } from './app.component';
   bootstrap: [AppComponent],
   providers: [provideHttpClient(withInterceptorsFromDi())]
 })
-export class AppModule {}
+export class AppModule {
+  
+}
