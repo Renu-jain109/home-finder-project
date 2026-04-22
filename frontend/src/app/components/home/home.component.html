@@ -68,7 +68,7 @@
 </section>
 
 <!-- CTA -->
-<section class="py-12 bg-blue-600 text-white text-center">
+<section *ngIf="isLoggedIn" class="py-12 bg-blue-600 text-white text-center">
   <div class="container mx-auto px-4">
     <h3 class="text-2xl font-bold mb-3">Have a Property to List?</h3>
     <p class="mb-6">Reach thousands of buyers and renters. List your property for free today.</p>

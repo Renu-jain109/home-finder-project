@@ -24,11 +24,13 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
   error = '';
 
   selectedState: string = '';
-  availableStates: string[] = ['Maharashtra', 'Karnataka', 'Delhi', 'Tamil Nadu', 'Telangana', 'Gujarat', 'Rajasthan', 'Kerala', 'Punjab', 'Haryana'];
+  availableStates: string[] = ['Maharashtra', 'Karnataka', 'Delhi', 'Rajasthan'];
 
   private map: any = null;
   private markers: any[] = [];
   private destroy$ = new Subject<void>();
+  private leafletLoaded = false;
+  private viewReady = false;
 
   private defaultLat = 20.5937;
   private defaultLng = 78.9629;
@@ -40,15 +42,16 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.loadProperties();
-    this.loadLeaflet();
   }
 
   ngAfterViewInit() {
-    // Map will be initialized after Leaflet loads
+    this.viewReady = true;
+    this.loadLeaflet();
   }
 
   private loadLeaflet() {
     if ((window as any).L) {
+      this.leafletLoaded = true;
       this.initMap();
       return;
     }
@@ -63,7 +66,8 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
     script.onload = () => {
-      setTimeout(() => this.initMap(), 100);
+      this.leafletLoaded = true;
+      this.initMap();
     };
     document.head.appendChild(script);
   }
@@ -77,7 +81,9 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private initMap() {
+    if (!this.viewReady || !this.leafletLoaded) return;
     if (!this.mapContainer?.nativeElement) return;
+    if (this.map) return; // Already initialized
 
     this.map = (window as any).L.map(this.mapContainer.nativeElement).setView(
       [this.defaultLat, this.defaultLng],
