@@ -20,6 +20,7 @@ export class PropertyService {
     maxPrice?: number;
     bedrooms?: number;
     category?: string;
+    state?: string;
   }): Observable<ApiResponse> {
     let params = new HttpParams();
     if (filters) {
@@ -29,6 +30,7 @@ export class PropertyService {
       if (filters.maxPrice) params = params.set('maxPrice', filters.maxPrice.toString());
       if (filters.bedrooms) params = params.set('bedrooms', filters.bedrooms.toString());
       if (filters.category) params = params.set('category', filters.category);
+      if (filters.state) params = params.set('state', filters.state);
     }
     return this.http.get<ApiResponse>(this.apiUrl, { params });
   }

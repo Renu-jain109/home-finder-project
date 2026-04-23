@@ -17,6 +17,11 @@ const propertySchema = new mongoose.Schema(
       required: [true, 'Location is required'],
       trim: true,
     },
+    state: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     bedrooms: {
       type: Number,
       required: [true, 'Number of bedrooms is required'],
@@ -43,7 +48,7 @@ const propertySchema = new mongoose.Schema(
     },
     imageUrl: {
       type: String,
-      default: 'https://via.placeholder.com/400x250?text=No+Image',
+      default: '',
     },
     description: {
       type: String,

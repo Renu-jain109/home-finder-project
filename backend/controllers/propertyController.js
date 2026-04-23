@@ -4,7 +4,7 @@ const Property = require('../models/Property');
 // @route   GET /api/properties
 const getAllProperties = async (req, res) => {
   try {
-    const { location, type, minPrice, maxPrice, bedrooms, category } = req.query;
+    const { location, type, minPrice, maxPrice, bedrooms, category, state } = req.query;
 
     // Build filter object dynamically
     let filter = { isAvailable: true };
@@ -20,6 +20,9 @@ const getAllProperties = async (req, res) => {
     }
     if (category) {
       filter.propertyCategory = category;
+    }
+    if (state) {
+      filter.state = state;
     }
     if (minPrice || maxPrice) {
       filter.price = {};
@@ -113,6 +116,7 @@ const seedProperties = async (req, res) => {
         title: '2BHK Apartment in Indiranagar',
         price: 25000,
         location: 'Indiranagar, Bengaluru',
+        state: 'Karnataka',
         bedrooms: 2,
         bathrooms: 2,
         area: 1100,
@@ -127,6 +131,7 @@ const seedProperties = async (req, res) => {
         title: '3BHK Villa in Whitefield',
         price: 85000,
         location: 'Whitefield, Bengaluru',
+        state: 'Karnataka',
         bedrooms: 3,
         bathrooms: 3,
         area: 2200,
@@ -141,6 +146,7 @@ const seedProperties = async (req, res) => {
         title: '1BHK Studio in Koramangala',
         price: 15000,
         location: 'Koramangala, Bengaluru',
+        state: 'Karnataka',
         bedrooms: 1,
         bathrooms: 1,
         area: 650,
@@ -155,6 +161,7 @@ const seedProperties = async (req, res) => {
         title: '4BHK House for Sale in Jayanagar',
         price: 9500000,
         location: 'Jayanagar, Bengaluru',
+        state: 'Karnataka',
         bedrooms: 4,
         bathrooms: 4,
         area: 3000,
@@ -169,6 +176,7 @@ const seedProperties = async (req, res) => {
         title: '2BHK Apartment in HSR Layout',
         price: 6800000,
         location: 'HSR Layout, Bengaluru',
+        state: 'Karnataka',
         bedrooms: 2,
         bathrooms: 2,
         area: 1250,
@@ -183,6 +191,7 @@ const seedProperties = async (req, res) => {
         title: 'Commercial Space in MG Road',
         price: 120000,
         location: 'MG Road, Bengaluru',
+        state: 'Karnataka',
         bedrooms: 0,
         bathrooms: 2,
         area: 1800,

@@ -47,8 +47,8 @@
           </div>
         </div>
 
-        <!-- Price & Location -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <!-- Price, Location & State -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
             <label class="block text-gray-700 font-semibold mb-2">Price (₹) *</label>
             <input type="number" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -64,6 +64,16 @@
               formControlName="location"
               placeholder="e.g. Koramangala, Bengaluru" />
             <div *ngIf="f('location')?.invalid && f('location')?.touched" class="text-red-500 text-sm mt-1">Location is required.</div>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">State *</label>
+            <select class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="f('state')?.invalid && f('state')?.touched"
+              formControlName="state">
+              <option value="">Select State</option>
+              <option *ngFor="let state of indianStates" [value]="state">{{ state }}</option>
+            </select>
+            <div *ngIf="f('state')?.invalid && f('state')?.touched" class="text-red-500 text-sm mt-1">State is required.</div>
           </div>
         </div>
 

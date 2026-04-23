@@ -3,6 +3,7 @@ export interface Property {
   title: string;
   price: number;
   location: string;
+  state: string;
   bedrooms: number;
   bathrooms: number;
   area: number;
@@ -24,3 +25,11 @@ export interface ApiResponse {
   data: Property | Property[];
   message?: string;
 }
+
+export const INDIAN_STATES = [
+  'Karnataka',
+  'Maharashtra',
+  'Delhi',
+  'Tamil Nadu',
+  'Uttar Pradesh'
+];

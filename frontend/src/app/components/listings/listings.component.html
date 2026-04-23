@@ -63,16 +63,16 @@
   </div>
 
   <!-- Results count -->
-  <p *ngIf="!loading && properties.length > 0" class="text-gray-500 mb-4">
-    Showing <strong>{{ properties.length }}</strong> properties
+  <p *ngIf="!loading && displayedProperties.length > 0" class="text-gray-500 mb-4">
+    Showing <strong>{{ displayedProperties.length }}</strong> of <strong>{{ properties.length }}</strong> properties
   </p>
 
   <!-- Property Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" *ngIf="!loading">
-    <div *ngFor="let property of properties" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div *ngFor="let property of displayedProperties" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div class="relative">
         <img [src]="property.imageUrl" class="w-full h-48 object-cover" alt="{{ property.title }}"
-          onerror="this.src='https://via.placeholder.com/400x250?text=No+Image'" />
+          onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27250%27%3E%3Crect width=%27100%25%27 height=%27100%25%27 fill=%27%23f3f4f6%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-size=%2718%27 fill=%27%239ca3af%27%3ENo Image Available%3C/text%3E%3C/svg%3E'" />
         <span class="absolute top-2 left-2 px-3 py-1 rounded-full text-sm font-semibold"
           [class]="property.type === 'Rent' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
           {{ property.type === 'Rent' ? 'For Rent' : 'For Sale' }}
@@ -94,5 +94,12 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- View More Button -->
+  <div *ngIf="!loading && hasMoreProperties" class="text-center mt-8">
+    <button class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold" (click)="loadMoreProperties()">
+      View More Properties
+    </button>
   </div>
 </div>

@@ -14,8 +14,14 @@ import { Property } from '../../models/property.model';
 })
 export class ListingsComponent implements OnInit {
   properties: Property[] = [];
+  displayedProperties: Property[] = [];
   loading = false;
   error = '';
+  
+  // Pagination
+  itemsPerPage = 6;
+  currentPage = 1;
+  hasMoreProperties = false;
 
   // Filter state
   filters = {
@@ -57,6 +63,7 @@ export class ListingsComponent implements OnInit {
     this.propertyService.getAllProperties(activeFilters).subscribe({
       next: (res) => {
         this.properties = res.data as Property[];
+        this.updateDisplayedProperties();
         this.loading = false;
       },
       error: (err) => {
@@ -67,11 +74,13 @@ export class ListingsComponent implements OnInit {
   }
 
   onFilterApply() {
+    this.currentPage = 1;
     this.loadProperties();
   }
 
   onFilterReset() {
     this.filters = { location: '', type: '', minPrice: null, maxPrice: null, bedrooms: null, category: '' };
+    this.currentPage = 1;
     this.loadProperties();
   }
 
@@ -93,6 +102,18 @@ export class ListingsComponent implements OnInit {
         error: () => alert('Failed to seed data.')
       });
     }
+  }
+
+  updateDisplayedProperties() {
+    const startIndex = 0;
+    const endIndex = this.currentPage * this.itemsPerPage;
+    this.displayedProperties = this.properties.slice(startIndex, endIndex);
+    this.hasMoreProperties = endIndex < this.properties.length;
+  }
+
+  loadMoreProperties() {
+    this.currentPage++;
+    this.updateDisplayedProperties();
   }
 
   formatPrice(price: number, type: string): string {

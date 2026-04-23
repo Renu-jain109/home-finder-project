@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PropertyService } from '../../services/property.service';
+import { INDIAN_STATES } from '../../models/property.model';
 
 @Component({
   selector: 'app-add-property',
@@ -19,6 +20,7 @@ export class AddPropertyComponent implements OnInit {
   submitting = false;
   successMessage = '';
   errorMessage = '';
+  indianStates = INDIAN_STATES;
 
   constructor(
     private fb: FormBuilder,
@@ -43,6 +45,7 @@ export class AddPropertyComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(5)]],
       price: ['', [Validators.required, Validators.min(0)]],
       location: ['', Validators.required],
+      state: ['', Validators.required],
       bedrooms: ['', [Validators.required, Validators.min(0)]],
       bathrooms: [1, [Validators.required, Validators.min(0)]],
       area: ['', [Validators.required, Validators.min(1)]],
@@ -59,7 +62,7 @@ export class AddPropertyComponent implements OnInit {
     this.loading = true;
     this.propertyService.getPropertyById(this.propertyId).subscribe({
       next: (res: any) => {
-        this.propertyForm.patchValue(res.data);
+        this.propertyForm.patchValue(res.data);        
         this.loading = false;
       },
       error: () => {

@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PropertyService } from '../../services/property.service';
-import { Property } from '../../models/property.model';
+import { Property, INDIAN_STATES } from '../../models/property.model';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -24,10 +24,11 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
   error = '';
 
   selectedState: string = '';
-  availableStates: string[] = ['Maharashtra', 'Karnataka', 'Delhi', 'Rajasthan'];
+  availableStates: string[] = INDIAN_STATES;
 
   private map: any = null;
-  private markers: any[] = [];
+  private markersMap = new Map<string, any>();
+  // private markers: any[] = [];
   private destroy$ = new Subject<void>();
   private leafletLoaded = false;
   private viewReady = false;
@@ -81,10 +82,15 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private initMap() {
+    console.log('initMap called:', { viewReady: this.viewReady, leafletLoaded: this.leafletLoaded, hasMap: !!this.map });
     if (!this.viewReady || !this.leafletLoaded) return;
-    if (!this.mapContainer?.nativeElement) return;
+    if (!this.mapContainer?.nativeElement) {
+      console.log('Map container not found');
+      return;
+    }
     if (this.map) return; // Already initialized
 
+    console.log('Initializing map with container:', this.mapContainer.nativeElement);
     this.map = (window as any).L.map(this.mapContainer.nativeElement).setView(
       [this.defaultLat, this.defaultLng],
       this.defaultZoom
@@ -94,18 +100,21 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
+    console.log('Map initialized, updating markers');
     this.updateMapMarkers();
   }
 
   private updateMapMarkers() {
+    console.log('updateMapMarkers called:', { hasMap: !!this.map, propertiesCount: this.filteredProperties.length });
     if (!this.map) return;
 
-    this.markers.forEach(marker => marker.remove());
-    this.markers = [];
+    this.markersMap.forEach(marker => marker.remove());
+    this.markersMap.clear();
 
     const bounds = (window as any).L.latLngBounds([]);
     let hasValidMarkers = false;
 
+    console.log('Processing properties for markers:', this.filteredProperties.length);
     this.filteredProperties.forEach(property => {
       const lat = property.lat ?? this.getMockLatForLocation(property.location);
       const lng = property.lng ?? this.getMockLngForLocation(property.location);
@@ -119,6 +128,15 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
           className: 'bg-gray-900 text-white px-3 py-1 rounded text-sm font-medium shadow-lg border-none'
         });
 
+// // Store marker by ID instead of index
+//         this.markersMap.set(property._id, marker);
+        
+//         bounds.extend([lat, lng]);
+//         hasValidMarkers = true;
+//       }
+    
+
+
         marker.on('mouseover', () => {
           this.hoveredPropertyId = property._id ?? null;
         });
@@ -127,16 +145,20 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
           this.hoveredPropertyId = null;
         });
 
-        this.markers.push(marker);
+        this.markersMap.set(property._id!, marker);
         bounds.extend([lat, lng]);
         hasValidMarkers = true;
       }
     });
 
     if (hasValidMarkers && bounds.isValid()) {
-      this.map.fitBounds(bounds, { padding: [50, 50] });
+      this.map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+    }else {
+      // Fallback if no properties found
+      this.map.setView([this.defaultLat, this.defaultLng], this.defaultZoom);
     }
   }
+  
 
   private getMockLatForLocation(location: string): number {
     const baseLat = 20.5937;
@@ -151,11 +173,15 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadProperties() {
+    console.log('loadProperties called with state filter:', this.selectedState);
     this.loading = true;
     this.error = '';
 
-    this.propertyService.getAllProperties().subscribe({
+    const filters = this.selectedState ? { state: this.selectedState } : undefined;
+
+    this.propertyService.getAllProperties(filters).subscribe({
       next: (res) => {
+        console.log('Properties loaded:', (res.data as Property[])?.length || 0);
         this.properties = res.data as Property[];
         this.applyStateFilter();
         this.loading = false;
@@ -163,7 +189,8 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
           this.updateMapMarkers();
         }
       },
-      error: () => {
+      error: (err) => {
+        console.error('Failed to load properties:', err);
         this.error = 'Failed to load properties.';
         this.loading = false;
       }
@@ -171,34 +198,42 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onStateChange() {
-    this.applyStateFilter();
-    if (this.map) {
-      this.updateMapMarkers();
-    }
+    this.loadProperties();
   }
 
   applyStateFilter() {
     if (!this.selectedState) {
       this.filteredProperties = [...this.properties];
     } else {
+      const selected = this.selectedState.toLowerCase();
       this.filteredProperties = this.properties.filter(p =>
-        p.location.toLowerCase().includes(this.selectedState.toLowerCase())
+        (p.state && p.state.toLowerCase() === selected) ||
+        p.location.toLowerCase().includes(selected)
       );
     }
   }
 
+  // MODIFIED: Cleaner hover logic using property ID
   onPropertyHover(property: Property) {
-    const index = this.filteredProperties.indexOf(property);
-    if (index >= 0 && this.markers[index]) {
-      this.markers[index].openTooltip();
+    if (!property._id) return;
+    
+    const marker = this.markersMap.get(property._id!);
+    if (marker) {
+      marker.openTooltip();
+      
       const lat = property.lat ?? this.getMockLatForLocation(property.location);
       const lng = property.lng ?? this.getMockLngForLocation(property.location);
-      this.map?.panTo([lat, lng]);
+      
+      // Use flyTo for smooth professional animation
+      this.map?.flyTo([lat, lng], 10, {
+        animate: true,
+        duration: 0.8
+      });
     }
   }
 
   onPropertyLeave() {
-    this.markers.forEach(marker => marker.closeTooltip());
+    this.markersMap.forEach(marker => marker.closeTooltip());
   }
 
   formatPrice(price: number, type: string): string {

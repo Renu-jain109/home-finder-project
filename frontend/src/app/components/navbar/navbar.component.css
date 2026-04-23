@@ -1,3 +1,6 @@
 .navbar .btn {
   border-radius: 20px;
 }
+.leaflet-container {
+  z-index: 0 !important;
+}

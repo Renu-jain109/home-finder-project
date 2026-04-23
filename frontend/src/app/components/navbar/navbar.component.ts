@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showAuthModal = false;
   authModalMode: 'login' | 'register' = 'login';
   isLoggedIn = false;
+  isMobileMenuOpen = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -56,5 +57,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   onLogout() {
     this.authService.logout();
     this.router.navigate(['/']);
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
 }
