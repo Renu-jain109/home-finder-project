@@ -28,7 +28,6 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private map: any = null;
   private markersMap = new Map<string, any>();
-  // private markers: any[] = [];
   private destroy$ = new Subject<void>();
   private leafletLoaded = false;
   private viewReady = false;
@@ -128,14 +127,7 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
           className: 'bg-gray-900 text-white px-3 py-1 rounded text-sm font-medium shadow-lg border-none'
         });
 
-// // Store marker by ID instead of index
-//         this.markersMap.set(property._id, marker);
-        
-//         bounds.extend([lat, lng]);
-//         hasValidMarkers = true;
-//       }
-    
-
+// Store marker by ID instead of index
 
         marker.on('mouseover', () => {
           this.hoveredPropertyId = property._id ?? null;
