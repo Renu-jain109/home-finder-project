@@ -26,6 +26,10 @@ const routes: Routes = [
     path: 'split-view',
     loadComponent: () => import('./components/split-view/split-view.component').then(m => m.SplitViewComponent)
   },
+  {
+    path: 'my-properties',
+    loadComponent: () => import('./components/my-properties/my-properties.component').then(m => m.MyPropertiesComponent)
+  },
   { path: '**', redirectTo: '' }
 ];
 

@@ -1,0 +1,66 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold">My Properties</h2>
+    <a routerLink="/add-property" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold">Post Property</a>
+  </div>
+
+  <!-- Skeleton Loading -->
+  <div *ngIf="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let _ of [1,2,3]" class="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
+      <div class="h-48 bg-gray-200"></div>
+      <div class="p-4 space-y-3">
+        <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+        <div class="h-6 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div class="flex gap-3 mt-4">
+          <div class="h-10 bg-gray-200 rounded flex-1"></div>
+          <div class="h-10 w-20 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{{ error }}</div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && !error && properties.length === 0" class="text-center py-12">
+    <p class="text-xl text-gray-600 mb-4">You haven't listed any properties yet.</p>
+    <a routerLink="/add-property" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Post Your First Property</a>
+  </div>
+
+  <!-- Results count -->
+  <p *ngIf="!loading && properties.length > 0" class="text-gray-500 mb-4">
+    <span *ngIf="properties.length === 1">You have 1 property</span>
+    <span *ngIf="properties.length !== 1">You have {{ properties.length }} properties</span>
+  </p>
+
+  <!-- Property Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" *ngIf="!loading">
+    <div *ngFor="let property of properties" class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="relative">
+        <img [src]="property.imageUrl" class="w-full h-48 object-cover" alt="{{ property.title }}"
+          onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27250%27%3E%3Crect width=%27100%25%27 height=%27100%25%27 fill=%27%23f3f4f6%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-size=%2718%27 fill=%27%239ca3af%27%3ENo Image Available%3C/text%3E%3C/svg%3E'" />
+        <span class="absolute top-2 left-2 px-3 py-1 rounded-full text-sm font-semibold"
+          [class]="property.type === 'Rent' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
+          {{ property.type === 'Rent' ? 'For Rent' : 'For Sale' }}
+        </span>
+      </div>
+      <div class="p-4">
+        <h5 class="font-bold text-lg mb-1">{{ property.title }}</h5>
+        <p class="text-gray-500 text-sm mb-2">{{ property.location }}</p>
+        <p class="text-blue-600 font-bold text-xl mb-3">{{ formatPrice(property.price, property.type) }}</p>
+        <div class="flex gap-4 text-gray-500 text-sm mb-4">
+          <span>{{ property.bedrooms }} BHK</span>
+          <span>{{ property.bathrooms }} Bath</span>
+          <span>{{ property.area }} sqft</span>
+        </div>
+        <div class="flex gap-2">
+          <a [routerLink]="['/property', property._id]" class="flex-1 bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">View Details</a>
+          <a [routerLink]="['/edit-property', property._id]" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm">✏️</a>
+          <button class="px-3 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm" (click)="onDelete(property._id!)">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

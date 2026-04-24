@@ -62,6 +62,10 @@ const propertySchema = new mongoose.Schema(
       type: String,
       default: '9999999999',
     },
+    ownerId: {
+      type: String,
+      default: '',
+    },
     isAvailable: {
       type: Boolean,
       default: true,

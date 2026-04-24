@@ -20,11 +20,17 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
 
   properties: Property[] = [];
   filteredProperties: Property[] = [];
+  displayedProperties: Property[] = [];
   loading = false;
   error = '';
 
   selectedState: string = '';
   availableStates: string[] = INDIAN_STATES;
+
+  // Pagination
+  itemsPerPage = 6;
+  currentPage = 1;
+  hasMoreProperties = false;
 
   private map: any = null;
   private markersMap = new Map<string, any>();
@@ -174,8 +180,12 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
     this.propertyService.getAllProperties(filters).subscribe({
       next: (res) => {
         console.log('Properties loaded:', (res.data as Property[])?.length || 0);
+        console.log('Raw response:', res);
         this.properties = res.data as Property[];
+        console.log('Properties array:', this.properties);
         this.applyStateFilter();
+        console.log('After filtering:', this.filteredProperties);
+        this.updateDisplayedProperties();
         this.loading = false;
         if (this.map) {
           this.updateMapMarkers();
@@ -189,10 +199,6 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  onStateChange() {
-    this.loadProperties();
-  }
-
   applyStateFilter() {
     if (!this.selectedState) {
       this.filteredProperties = [...this.properties];
@@ -203,6 +209,33 @@ export class SplitViewComponent implements OnInit, OnDestroy, AfterViewInit {
         p.location.toLowerCase().includes(selected)
       );
     }
+  }
+
+  updateDisplayedProperties() {
+    const startIndex = 0;
+    const endIndex = this.currentPage * this.itemsPerPage;
+    this.displayedProperties = this.filteredProperties.slice(startIndex, endIndex);
+    this.hasMoreProperties = endIndex < this.filteredProperties.length;
+    
+    console.log('Pagination Debug:', {
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage,
+      startIndex,
+      endIndex,
+      totalFiltered: this.filteredProperties.length,
+      displayedCount: this.displayedProperties.length,
+      hasMore: this.hasMoreProperties
+    });
+  }
+
+  loadMoreProperties() {
+    this.currentPage++;
+    this.updateDisplayedProperties();
+  }
+
+  onStateChange() {
+    this.currentPage = 1;
+    this.loadProperties();
   }
 
   // MODIFIED: Cleaner hover logic using property ID

@@ -95,15 +95,6 @@ export class ListingsComponent implements OnInit {
     }
   }
 
-  onSeed() {
-    if (confirm('This will replace all existing data with 6 sample properties. Continue?')) {
-      this.propertyService.seedProperties().subscribe({
-        next: () => this.loadProperties(),
-        error: () => alert('Failed to seed data.')
-      });
-    }
-  }
-
   updateDisplayedProperties() {
     const startIndex = 0;
     const endIndex = this.currentPage * this.itemsPerPage;

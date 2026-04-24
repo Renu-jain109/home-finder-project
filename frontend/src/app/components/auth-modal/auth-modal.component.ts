@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -11,7 +11,7 @@ type AuthMode = 'login' | 'register';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule]
 })
-export class AuthModalComponent {
+export class AuthModalComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() success = new EventEmitter<void>();
   @Input() mode: AuthMode = 'login';
@@ -19,13 +19,15 @@ export class AuthModalComponent {
   isLoading = false;
   errorMessage = '';
 
-  loginForm: FormGroup;
-  registerForm: FormGroup;
+  loginForm!: FormGroup;
+  registerForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]

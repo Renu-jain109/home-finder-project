@@ -1,29 +1,32 @@
 <!-- Hero Section -->
-<section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center py-20">
+<section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center pt-20 pb-20">
   <div class="container mx-auto px-4">
     <h1 class="text-4xl md:text-5xl font-bold mb-4">Find Your Dream Home</h1>
-    <p class="text-xl mb-8">Browse thousands of properties for rent and sale across India</p>
+    <p class="text-xl font-normal text-white mb-8">Browse thousands of properties for rent and sale across India</p>
 
     <!-- Search Bar -->
     <div class="bg-white rounded-xl shadow-xl p-6 mx-auto max-w-2xl">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
         <div class="md:col-span-5">
           <label class="block text-gray-700 font-semibold mb-2 text-left">Location</label>
-          <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          <input type="text" class="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
             placeholder="e.g. Bengaluru, Mumbai..."
             [(ngModel)]="searchLocation" />
         </div>
         <div class="md:col-span-4">
           <label class="block text-gray-700 font-semibold mb-2 text-left">Type</label>
-          <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" [(ngModel)]="searchType">
+          <select class="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none" [(ngModel)]="searchType">
             <option value="">Buy or Rent</option>
             <option value="Rent">Rent</option>
             <option value="Sale">Buy</option>
           </select>
         </div>
         <div class="md:col-span-3">
-          <button class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-colors" (click)="onSearch()">
-            🔍 Search
+          <button class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-colors h-10 flex items-center justify-center gap-2" (click)="onSearch()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            Search
           </button>
         </div>
       </div>
@@ -35,17 +38,17 @@
 <section class="py-12 bg-gray-50">
   <div class="container mx-auto px-4 text-center">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-xl shadow-md p-6">
+      <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center justify-center text-center">
         <h2 class="text-3xl font-bold text-blue-600">500+</h2>
-        <p class="text-gray-600 mt-2">Properties Listed</p>
+        <p class="text-gray-800 mt-2 text-center">Properties Listed</p>
       </div>
-      <div class="bg-white rounded-xl shadow-md p-6">
+      <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center justify-center text-center">
         <h2 class="text-3xl font-bold text-green-600">20+</h2>
-        <p class="text-gray-600 mt-2">Cities Covered</p>
+        <p class="text-gray-800 mt-2 text-center">Cities Covered</p>
       </div>
-      <div class="bg-white rounded-xl shadow-md p-6">
+      <div class="bg-white rounded-xl shadow-md p-6 flex flex-col items-center justify-center text-center">
         <h2 class="text-3xl font-bold text-yellow-600">1000+</h2>
-        <p class="text-gray-600 mt-2">Happy Customers</p>
+        <p class="text-gray-800 mt-2 text-center">Happy Customers</p>
       </div>
     </div>
   </div>
@@ -59,7 +62,7 @@
       <div *ngFor="let cat of categories" class="cursor-pointer">
         <div class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition-shadow h-full"
           [routerLink]="['/listings']" [queryParams]="{category: cat.value}">
-          <div class="text-3xl mb-2">{{cat.icon}}</div>
+          <div class="w-16 h-16 mx-auto mb-3 flex items-center justify-center text-3xl bg-gray-100 rounded-full">{{cat.icon}}</div>
           <p class="font-semibold text-sm">{{cat.label}}</p>
         </div>
       </div>
@@ -72,6 +75,6 @@
   <div class="container mx-auto px-4">
     <h3 class="text-2xl font-bold mb-3">Have a Property to List?</h3>
     <p class="mb-6">Reach thousands of buyers and renters. List your property for free today.</p>
-    <a routerLink="/add-property" class="inline-block bg-yellow-400 text-gray-900 font-semibold px-8 py-3 rounded-lg hover:bg-yellow-300 transition-colors">List Your Property</a>
+    <a routerLink="/add-property" class="inline-block bg-yellow-400 text-gray-900 font-semibold px-8 py-3 rounded-lg hover:bg-yellow-300 transition-colors">Post Property</a>
   </div>
 </section>

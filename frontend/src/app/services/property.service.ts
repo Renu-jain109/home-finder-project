@@ -55,8 +55,9 @@ export class PropertyService {
     return this.http.delete<ApiResponse>(`${this.apiUrl}/${id}`);
   }
 
-  // Seed sample data
-  seedProperties(): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/seed`, {});
+  // Get properties by owner ID
+  getMyProperties(ownerId: string): Observable<ApiResponse> {
+    let params = new HttpParams().set('ownerId', ownerId);
+    return this.http.get<ApiResponse>(`${this.apiUrl}/my`, { params });
   }
 }

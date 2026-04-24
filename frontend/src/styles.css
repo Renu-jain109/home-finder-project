@@ -43,3 +43,13 @@ body {
 .leaflet-tooltip-top:before {
   border-top-color: #1f2937 !important;
 }
+
+.leaflet-container {
+  z-index: 0 !important;
+}
+
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 0 !important;
+}

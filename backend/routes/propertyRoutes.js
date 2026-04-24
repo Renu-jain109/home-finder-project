@@ -7,10 +7,14 @@ const {
   updateProperty,
   deleteProperty,
   seedProperties,
+  getMyProperties,
 } = require('../controllers/propertyController');
 
 // Seed route (for testing)
 router.post('/seed', seedProperties);
+
+// Get my properties (must come before /:id)
+router.get('/my', getMyProperties);
 
 // Main CRUD routes
 router.get('/', getAllProperties);

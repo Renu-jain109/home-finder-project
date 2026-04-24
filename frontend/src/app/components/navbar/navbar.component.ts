@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthModalComponent } from '../auth-modal/auth-modal.component';
@@ -17,7 +17,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showAuthModal = false;
   authModalMode: 'login' | 'register' = 'login';
   isLoggedIn = false;
+  userName = '';
   isMobileMenuOpen = false;
+  isUserMenuOpen = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -28,6 +30,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.authService.isLoggedIn$.pipe(takeUntil(this.destroy$)).subscribe(loggedIn => {
       this.isLoggedIn = loggedIn;
+    });
+
+    this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
+      this.userName = user?.name || '';
     });
   }
 
@@ -61,9 +67,43 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    if (this.isMobileMenuOpen) {
+      this.isUserMenuOpen = false;
+    }
   }
 
   closeMobileMenu() {
     this.isMobileMenuOpen = false;
+  }
+
+  toggleUserMenu() {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
+  closeUserMenu() {
+    this.isUserMenuOpen = false;
+  }
+
+  logoutAndClose() {
+    this.closeUserMenu();
+    this.closeMobileMenu();
+    this.onLogout();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    
+    // Close user menu if clicking outside of it
+    if (this.isUserMenuOpen) {
+      const userMenuElement = document.querySelector('.user-menu-container');
+      const userMenuButton = document.querySelector('.user-menu-button');
+      
+      if (userMenuElement && userMenuButton && 
+          !userMenuElement.contains(target) && 
+          !userMenuButton.contains(target)) {
+        this.closeUserMenu();
+      }
+    }
   }
 }

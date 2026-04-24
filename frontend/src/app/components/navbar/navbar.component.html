@@ -1,25 +1,46 @@
-<nav class="bg-blue-600 text-white shadow-md h-16 flex items-center justify-between">
+<nav class="bg-blue-600 text-white shadow-md h-16 flex items-center justify-between sticky top-0 z-50">
   <div class="container mx-auto px-4 h-full">
     <div class="flex items-center justify-between h-full">
       <a class="text-xl font-bold" routerLink="/">🏠 HomeFinder</a>
-      <div class="hidden md:flex items-center space-x-4">
-        <a class="hover:text-blue-200 transition-colors px-3 py-2" routerLink="/" routerLinkActive="text-yellow-300" [routerLinkActiveOptions]="{exact: true}">Home</a>
-        <a class="hover:text-blue-200 transition-colors px-3 py-2" routerLink="/listings" routerLinkActive="text-yellow-300">Browse</a>
-        <a class="hover:text-blue-200 transition-colors px-3 py-2" routerLink="/split-view" routerLinkActive="text-yellow-300">View on Map</a>
+      <div class="hidden md:flex items-center space-x-6">
+        <a class="hover:text-blue-200 transition-colors py-2" routerLink="/" routerLinkActive="text-yellow-300" [routerLinkActiveOptions]="{exact: true}">Home</a>
+        <a class="hover:text-blue-200 transition-colors py-2" routerLink="/listings" routerLinkActive="text-yellow-300">Browse</a>
+        <a class="hover:text-blue-200 transition-colors py-2" routerLink="/split-view" routerLinkActive="text-yellow-300">View on Map</a>
 
         <ng-container *ngIf="!isLoggedIn">
           <button (click)="openLogin()" class="bg-white text-blue-600 px-3 py-1 rounded-lg font-semibold hover:bg-blue-50 transition-colors">Login</button>
           <button (click)="openRegister()" class="bg-yellow-400 text-gray-900 px-3 py-1 rounded-lg font-semibold hover:bg-yellow-300 transition-colors">Register</button>
         </ng-container>
 
-        <button *ngIf="isLoggedIn" routerLink="/add-property" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-2 px-4 rounded-md text-sm transition-all duration-300">Post Property</button>
+        <ng-container *ngIf="isLoggedIn">
+          <button routerLink="/add-property" class="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-2 px-6 rounded-md text-sm shadow-lg shadow-yellow-500/30 transition-all duration-300">
+            Post Property
+          </button>
 
-        <button *ngIf="isLoggedIn" (click)="onLogout()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md text-sm flex items-center gap-2 transition-all duration-300">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-          </svg>
-          Logout
-        </button>
+          <div class="relative">
+            <button (click)="toggleUserMenu()" class="user-menu-button flex items-center gap-1 text-yellow-300 font-semibold text-sm hover:text-white transition-colors py-2">
+              Hi, {{ userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase() }}
+              <svg class="w-4 h-4 transition-transform" [class.rotate-180]="isUserMenuOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div *ngIf="isUserMenuOpen" class="user-menu-container absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-100">
+              <a routerLink="/my-properties" (click)="closeUserMenu()" class="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors text-sm">
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                My Properties
+              </a>
+              <div class="border-t border-gray-100"></div>
+              <button (click)="logoutAndClose()" class="w-full flex items-center gap-2 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors text-sm text-left">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                Logout
+              </button>
+            </div>
+          </div>
+        </ng-container>
       </div>
       <button class="md:hidden p-2" (click)="toggleMobileMenu()">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,20 +52,28 @@
 
   <!-- Mobile Menu -->
   <div *ngIf="isMobileMenuOpen" class="md:hidden fixed top-16 left-0  w-full bg-blue-500 shadow-2xl border-t-4 border-blue-500 z-[9999]">
-  <!-- <div *ngIf="isMobileMenuOpen" class="md:hidden bg-blue-500 shadow-2xl border-t-4 border-blue-500 absolute  w-full z-50"> -->
     <div class="container mx-auto px-4 py-4 space-y-2">
       <a class="block hover:bg-white transition-colors px-3 py-2 rounded text-black font-semibold" routerLink="/" routerLinkActive="text-blue-900 bg-white" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()">Home</a>
       <a class="block hover:bg-white transition-colors px-3 py-2 rounded text-black font-semibold" routerLink="/listings" routerLinkActive="text-blue-900 bg-white" (click)="closeMobileMenu()">Browse</a>
       <a class="block hover:bg-white transition-colors px-3 py-2 rounded text-black font-semibold" routerLink="/split-view" routerLinkActive="text-blue-900 bg-white" (click)="closeMobileMenu()">View on Map</a>
       
       <ng-container *ngIf="!isLoggedIn">
-        <button (click)="openLogin(); closeMobileMenu()" class="w-full bg-blue-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition-colors text-left">Login</button>
-        <button (click)="openRegister(); closeMobileMenu()" class="w-full bg-yellow-400 text-gray-900 px-5 py-2 rounded-full font-semibold hover:bg-yellow-300 transition-colors text-left">Register</button>
+        <button (click)="openLogin(); closeMobileMenu()" class="w-full bg-blue-600 text-white px-5 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors text-left">Login</button>
+        <button (click)="openRegister(); closeMobileMenu()" class="w-full bg-yellow-400 text-gray-900 px-5 py-2 rounded-md font-semibold hover:bg-yellow-300 transition-colors text-left">Register</button>
       </ng-container>
       
-      <button *ngIf="isLoggedIn" routerLink="/add-property" class="w-full bg-yellow-400 text-gray-900 px-5 py-2 rounded-full font-semibold hover:bg-yellow-300 transition-colors text-left" (click)="closeMobileMenu()">List Your Property</button>
+      <div *ngIf="isLoggedIn" class="px-3 py-2 text-yellow-300 font-semibold">Hi, {{ userName }}</div>
+
+      <button *ngIf="isLoggedIn" routerLink="/add-property" class="w-full bg-yellow-400 text-gray-900 px-5 py-2 rounded-md font-semibold hover:bg-yellow-300 transition-colors text-left" (click)="closeMobileMenu()">Post Property</button>
       
-      <button *ngIf="isLoggedIn" (click)="onLogout(); closeMobileMenu()" class="w-full bg-red-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-red-600 transition-colors flex items-center gap-2 text-left">
+      <button *ngIf="isLoggedIn" routerLink="/my-properties" class="w-full bg-yellow-400 text-gray-900 px-5 py-2 rounded-md font-semibold hover:bg-yellow-300 transition-colors text-left flex items-center gap-2" (click)="closeMobileMenu()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        My Properties
+      </button>
+      
+      <button *ngIf="isLoggedIn" (click)="onLogout(); closeMobileMenu()" class="w-full bg-red-500 text-white px-5 py-2 rounded-md font-semibold hover:bg-red-600 transition-colors flex items-center gap-2 text-left">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
         </svg>

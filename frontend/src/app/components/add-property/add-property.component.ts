@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PropertyService } from '../../services/property.service';
+import { AuthService } from '../../services/auth.service';
 import { INDIAN_STATES } from '../../models/property.model';
 
 @Component({
@@ -25,6 +26,7 @@ export class AddPropertyComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private propertyService: PropertyService,
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -96,7 +98,9 @@ export class AddPropertyComponent implements OnInit {
         }
       });
     } else {
-      this.propertyService.createProperty(formData).subscribe({
+      const user = this.authService.getCurrentUser();
+      const propertyData = { ...formData, ownerId: user?.id || '' };
+      this.propertyService.createProperty(propertyData).subscribe({
         next: () => {
           this.successMessage = 'Property listed successfully!';
           this.submitting = false;
